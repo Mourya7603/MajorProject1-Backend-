@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   const orders = await Order.find()
     .populate("user")
-    .populate("products");
+    .populate("items.product");
   res.json(orders);
 });
 
