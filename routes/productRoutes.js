@@ -13,21 +13,25 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all products (with optional filters + sorting)
+// Get all products (with optional filters + sorting) 
 router.get("/", async (req, res) => {
   try {
-    const { category, rating, sort } = req.query;
+    const { category, rating, sort } = req.query; // Change to 'rating' (singular)
     let filter = {};
+
+    console.log("Received query:", { category, rating, sort });
 
     // Filter by category
     if (category) {
-      filter.category = { $in: category.split(",") }; // multiple categories
+      filter.category = { $in: category.split(",") };
     }
 
-    // Filter by rating
     if (rating) {
-      filter.rating = { $gte: Number(rating) };
+      filter.ratings = { $gte: Number(rating) }; // Database field is 'ratings'
+      console.log("Filtering by rating >= ", rating);
     }
+
+    console.log("Final filter:", filter);
 
     // Build query
     let query = Product.find(filter);
@@ -40,6 +44,7 @@ router.get("/", async (req, res) => {
     }
 
     const products = await query.exec();
+    console.log("Found products:", products.length);
     res.json(products);
   } catch (err) {
     res.status(500).json({ error: err.message });
