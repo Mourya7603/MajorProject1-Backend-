@@ -14,12 +14,12 @@ const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
-    default: "Pending",
+    
   },
   paymentStatus: {
     type: String,
     enum: ["Pending", "Paid", "Failed"],
-    default: "Pending",
+    
   },
 }, { timestamps: true });
 
