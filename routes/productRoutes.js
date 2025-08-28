@@ -16,19 +16,35 @@ router.post("/", async (req, res) => {
 // Get all products (with optional filters + sorting) 
 router.get("/", async (req, res) => {
   try {
-    const { category, rating, sort } = req.query; // Change to 'rating' (singular)
+    const { category, rating, sort, arrivals } = req.query; // Added 'arrivals' parameter
     let filter = {};
 
-    console.log("Received query:", { category, rating, sort });
+    console.log("Received query:", { category, rating, sort, arrivals });
 
     // Filter by category
     if (category) {
       filter.category = { $in: category.split(",") };
     }
 
+    // Filter by rating
     if (rating) {
-      filter.ratings = { $gte: Number(rating) }; // Database field is 'ratings'
+      filter.ratings = { $gte: Number(rating) };
       console.log("Filtering by rating >= ", rating);
+    }
+
+    // Filter by arrivals - NEW: Add this filter
+    if (arrivals) {
+      // Handle case sensitivity by converting to proper case
+      const arrivalsMap = {
+        'winter': 'Winter',
+        'summer': 'Summer', 
+        'limited': 'Limited',
+        'new': 'New'
+      };
+      
+      const arrivalsValue = arrivalsMap[arrivals.toLowerCase()] || arrivals;
+      filter.Arrivals = arrivalsValue;
+      console.log("Filtering by arrivals:", arrivalsValue);
     }
 
     console.log("Final filter:", filter);
@@ -73,7 +89,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-//Delete product
+// Delete product
 router.delete("/:id", async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
