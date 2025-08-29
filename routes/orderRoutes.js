@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const order = await Order.findById(req.params.id)
     .populate("user")
-    .populate("items.products");
+    .populate("items.product");
   res.json(order);
 });
 
